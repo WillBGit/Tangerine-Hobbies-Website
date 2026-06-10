@@ -1,0 +1,146 @@
+@font-face {
+  font-family: 'OutrunFuture';
+  src: url('/fonts/OutrunFuture.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'OutrunFuture';
+  src: url('/fonts/OutrunFutureBold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #09000e;
+  --bg2: #110016;
+  --bg3: #1b0025;
+  --border: #3a0050;
+  --gold: #b8245a;
+  --gold-light: #e05a80;
+  --red: #c9943a;
+  --red-light: #e0b85a;
+  --text: #f0dde6;
+  --text-muted: #7a4060;
+  --radius: 4px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+
+a { color: var(--gold); text-decoration: none; }
+a:hover { color: var(--gold-light); }
+
+h1, h2, h3 {
+  font-family: 'OutrunFuture', 'Georgia', serif;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  background: linear-gradient(180deg, #ff6eb4, #a78bfa, #67e8f9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+input, textarea, select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+textarea { resize: vertical; min-height: 100px; }
+select option { background: var(--bg3); }
+
+.btn-primary {
+  background: var(--gold);
+  color: #f0dde6;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.6rem 1.5rem;
+  box-shadow: 0 0 12px rgba(184, 36, 90, 0.35);
+}
+.btn-primary:hover {
+  background: var(--gold-light);
+  box-shadow: 0 0 20px rgba(224, 90, 128, 0.45);
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+.btn-danger { background: #1a0020; color: #c06080; border: 1px solid #3a0040; }
+.btn-danger:hover { background: #250030; box-shadow: 0 0 10px rgba(184,36,90,0.2); }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+.btn-ghost:hover { background: rgba(201,148,58,0.1); box-shadow: 0 0 10px rgba(201,148,58,0.2); }
+
+.btn-sm { padding: 0.3rem 0.75rem; font-size: 0.8rem; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+.page { padding: 2.5rem 0 4rem; flex: 1; }
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+  text-shadow: 0 0 16px rgba(184, 36, 90, 0.4);
+}
+
+.page-subtitle { color: var(--text-muted); margin-bottom: 2rem; }
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-pending  { background: #200028; color: #a060b0; }
+.badge-accepted { background: #1a0a00; color: var(--red-light); }
+.badge-wip      { background: #280018; color: var(--gold-light); }
+.badge-complete { background: #300020; color: #e090b0; }
+.badge-declined { background: #1a0010; color: #804060; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; }
+.form-group label { font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.error-msg { color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; }
+.success-msg { color: #6fdb6f; font-size: 0.9rem; margin-top: 0.5rem; }
+
+.loading { color: var(--text-muted); padding: 2rem; text-align: center; }

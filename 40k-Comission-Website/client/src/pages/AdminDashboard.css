@@ -1,0 +1,97 @@
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.tab-btn {
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0.6rem 1.25rem;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-active { color: var(--gold) !important; border-bottom-color: var(--gold) !important; }
+
+/* Commissions */
+.commissions-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.commission-row { overflow: visible; }
+
+.commission-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.25rem;
+  cursor: pointer;
+  gap: 1rem;
+}
+.commission-summary:hover { background: var(--bg3); }
+
+.commission-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.commission-meta strong { color: var(--text); }
+.text-muted { color: var(--text-muted); font-size: 0.85rem; }
+.faction-tag { font-size: 0.75rem; background: var(--bg3); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 99px; color: var(--gold); }
+
+.commission-right { display: flex; align-items: center; gap: 0.75rem; }
+.cdate { font-size: 0.8rem; }
+.expand-icon { font-size: 0.7rem; color: var(--text-muted); }
+
+.commission-detail {
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg3);
+}
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem; margin-bottom: 1rem; }
+.detail-full { grid-column: 1 / -1; }
+.detail-grid label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.detail-grid p { margin-top: 0.15rem; font-size: 0.9rem; }
+
+.detail-actions { display: flex; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap; }
+.action-btns { display: flex; gap: 0.5rem; padding-bottom: 0.05rem; }
+
+/* Portfolio admin */
+.add-portfolio-form {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.add-portfolio-form h3 { color: var(--gold); margin-bottom: 1rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) { .form-row-2 { grid-template-columns: 1fr; } }
+
+.portfolio-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.portfolio-admin-card {
+  display: flex;
+  flex-direction: column;
+}
+.portfolio-admin-card img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+.portfolio-admin-info {
+  padding: 0.6rem 0.75rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.portfolio-admin-info strong { font-size: 0.9rem; color: var(--text); }
+.portfolio-admin-info span { font-size: 0.78rem; color: var(--gold); }
+.portfolio-admin-card .btn-danger { margin: 0 0.75rem 0.75rem; }

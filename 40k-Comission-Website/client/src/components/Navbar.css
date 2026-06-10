@@ -1,0 +1,65 @@
+.navbar {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 2px 20px rgba(184, 36, 90, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.navbar-brand {
+  font-family: 'OutrunFuture', 'Georgia', serif;
+  font-size: 1.25rem;
+  color: var(--gold);
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.navbar-brand:hover { color: var(--gold-light); }
+
+.brand-skull { font-size: 1.1rem; }
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 1.75rem;
+}
+
+.navbar-links a {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.navbar-links a:hover,
+.navbar-links a.active { color: var(--gold); }
+
+.nav-admin { color: var(--text-muted) !important; }
+.nav-admin:hover, .nav-admin.active { color: var(--gold) !important; }
+
+.nav-register { color: var(--gold) !important; }
+.nav-register:hover { color: var(--gold-light) !important; }
+
+.nav-user-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.nav-user-btn:hover { color: var(--gold); }

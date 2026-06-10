@@ -1,0 +1,51 @@
+.myc-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.myc-actions { display: flex; gap: 0.5rem; align-items: center; padding-top: 0.25rem; }
+
+.myc-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.myc-card { overflow: visible; }
+
+.myc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  gap: 1rem;
+}
+.myc-header:hover { background: var(--bg3); }
+
+.myc-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.myc-info strong { color: var(--text); font-size: 0.95rem; }
+.myc-meta { font-size: 0.8rem; color: var(--text-muted); }
+
+.myc-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+.myc-thread { border-top: 1px solid var(--border); }
+
+.myc-messages {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--bg);
+}
+
+.myc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 4rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+}

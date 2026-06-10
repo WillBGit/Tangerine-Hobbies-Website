@@ -1,0 +1,28 @@
+.request-form {
+  padding: 2rem;
+  max-width: 750px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+.request-submit { margin-top: 0.5rem; }
+
+.request-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 4rem 1rem;
+}
+.success-icon {
+  font-size: 3rem;
+  color: var(--gold);
+}
+.request-success h1 { font-size: 2rem; }
+.request-success p { color: var(--text-muted); max-width: 500px; }

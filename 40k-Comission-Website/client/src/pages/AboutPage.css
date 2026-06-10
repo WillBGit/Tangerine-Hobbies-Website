@@ -1,0 +1,105 @@
+.about-container { max-width: 780px; }
+
+.about-hero {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.about-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.about-avatar-placeholder {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'OutrunFuture', serif;
+  font-size: 1.6rem;
+  color: var(--gold);
+  box-shadow: 0 0 20px rgba(184, 36, 90, 0.25);
+}
+
+.about-tagline {
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 0.4rem;
+}
+
+.about-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+  margin-bottom: 3rem;
+}
+
+.about-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: var(--red);
+  letter-spacing: 0.06em;
+}
+
+.about-section p {
+  color: var(--text);
+  line-height: 1.8;
+}
+
+.about-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.about-list li {
+  padding-left: 1.25rem;
+  position: relative;
+  color: var(--text);
+}
+.about-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: 0.65rem;
+  top: 0.35em;
+}
+
+.about-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.about-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+.about-steps li span {
+  font-family: 'OutrunFuture', serif;
+  font-size: 0.85rem;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.about-cta {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.about-cta h3 { font-size: 1.2rem; color: var(--gold); }
+.about-cta p { color: var(--text-muted); }
