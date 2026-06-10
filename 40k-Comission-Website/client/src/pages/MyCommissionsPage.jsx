@@ -58,6 +58,19 @@ function CommissionThread({ commission }) {
 
       {open && (
         <div className="myc-thread">
+          {commission.payment_status === 'pending' && (
+            <div className="myc-payment-banner">
+              <span>Payment requested: <strong>${Number(commission.payment_amount).toFixed(2)}</strong></span>
+              <a href={commission.stripe_checkout_url} target="_blank" rel="noreferrer" className="btn-primary btn-sm">
+                Pay Now
+              </a>
+            </div>
+          )}
+          {commission.payment_status === 'paid' && (
+            <div className="myc-payment-complete">
+              ✓ Payment complete — ${Number(commission.payment_amount).toFixed(2)}
+            </div>
+          )}
           <div className="myc-messages">
             {messages.length === 0 && <p className="chat-empty">No messages yet. Send us a note below!</p>}
             {messages.map(msg => (

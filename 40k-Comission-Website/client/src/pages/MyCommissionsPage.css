@@ -40,6 +40,25 @@
   background: var(--bg);
 }
 
+.myc-payment-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: color-mix(in srgb, var(--gold) 10%, var(--bg2));
+  border-bottom: 1px solid var(--gold);
+  gap: 1rem;
+}
+.myc-payment-banner span { font-size: 0.9rem; color: var(--text); }
+
+.myc-payment-complete {
+  padding: 0.65rem 1.25rem;
+  background: color-mix(in srgb, #22c55e 10%, var(--bg2));
+  border-bottom: 1px solid #22c55e;
+  font-size: 0.9rem;
+  color: #86efac;
+}
+
 .myc-empty {
   display: flex;
   flex-direction: column;

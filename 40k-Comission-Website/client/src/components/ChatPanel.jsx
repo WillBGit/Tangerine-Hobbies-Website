@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import api from '../api';
+import api from '../adminApi';
 import './ChatPanel.css';
 
 export default function ChatPanel({ commissionId, accessToken }) {

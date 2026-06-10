@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import api from '../adminApi';
 import ChatPanel from '../components/ChatPanel';
 import './AdminDashboard.css';
 
@@ -13,6 +13,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(null);
   const [patchState, setPatchState] = useState({});
+  const [paymentInputs, setPaymentInputs] = useState({});
   const [newItem, setNewItem] = useState({ title: '', faction: '', description: '', image_url: '' });
   const [addError, setAddError] = useState('');
   const navigate = useNavigate();
@@ -44,6 +45,17 @@ export default function AdminDashboard() {
     const { data } = await api.patch(`/commissions/${id}`, updated);
     setCommissions(cs => cs.map(c => c.id === id ? data : c));
     setPatchState(s => { const n = { ...s }; delete n[id]; return n; });
+  }
+
+  async function requestPayment(id) {
+    const amount = paymentInputs[id];
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) return;
+    const { data } = await api.post(`/stripe/create-payment/${id}`, { amount: Number(amount) });
+    setCommissions(cs => cs.map(c => c.id === id
+      ? { ...c, payment_status: 'pending', payment_amount: amount, stripe_checkout_url: data.url }
+      : c
+    ));
+    setPaymentInputs(s => { const n = { ...s }; delete n[id]; return n; });
   }
 
   async function deleteCommission(id) {
@@ -141,6 +153,37 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <ChatPanel commissionId={c.id} accessToken={c.access_token} />
+
+                    <div className="payment-section">
+                      <label className="payment-label">Payment</label>
+                      {(!c.payment_status || c.payment_status === 'none') && (
+                        <div className="payment-request-row">
+                          <input
+                            type="number"
+                            className="payment-amount-input"
+                            placeholder="Amount ($)"
+                            min="0.01"
+                            step="0.01"
+                            value={paymentInputs[c.id] || ''}
+                            onChange={e => setPaymentInputs(s => ({ ...s, [c.id]: e.target.value }))}
+                          />
+                          <button className="btn-primary btn-sm" onClick={() => requestPayment(c.id)}>
+                            Request Payment
+                          </button>
+                        </div>
+                      )}
+                      {c.payment_status === 'pending' && (
+                        <div className="payment-pending-row">
+                          <span className="badge badge-wip">Awaiting Payment · ${Number(c.payment_amount).toFixed(2)}</span>
+                          <button className="btn-ghost btn-sm" onClick={() => navigator.clipboard.writeText(c.stripe_checkout_url)}>
+                            Copy Link
+                          </button>
+                        </div>
+                      )}
+                      {c.payment_status === 'paid' && (
+                        <span className="badge badge-complete">Paid ✓ · ${Number(c.payment_amount).toFixed(2)}</span>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

@@ -10,12 +10,18 @@ import messagesRouter from './routes/messages.js';
 import trackRouter from './routes/track.js';
 import usersRouter from './routes/users.js';
 import authRouter, { setAdminHash } from './routes/auth.js';
+import stripeRouter from './routes/stripe.js';
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+// Capture raw body for Stripe webhook signature verification
+app.use(express.json({
+  verify: (req, res, buf) => {
+    if (req.originalUrl === '/api/stripe/webhook') req.rawBody = buf;
+  }
+}));
 
 app.use('/api/portfolio', portfolioRouter);
 app.use('/api/pricing', pricingRouter);
@@ -24,6 +30,7 @@ app.use('/api/commissions/:id/messages', messagesRouter);
 app.use('/api/track', trackRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/stripe', stripeRouter);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
