@@ -34,6 +34,11 @@ export default function Navbar() {
           {!user && <li><NavLink to="/login" onClick={close}>Log In</NavLink></li>}
           {!user && <li><NavLink to="/register" className="nav-register" onClick={close}>Register</NavLink></li>}
           {user?.isAdmin && <li><NavLink to="/admin/dashboard" className="nav-admin" onClick={close}>Admin</NavLink></li>}
+          {user && (
+            <li className="nav-logout-mobile">
+              <button className="btn-ghost btn-sm" onClick={handleLogout}>Log Out</button>
+            </li>
+          )}
         </ul>
 
         <div className="navbar-right">
