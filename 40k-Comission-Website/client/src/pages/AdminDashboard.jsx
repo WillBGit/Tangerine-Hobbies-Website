@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import api from '../adminApi';
 import ChatPanel from '../components/ChatPanel';
 import './AdminDashboard.css';
@@ -51,8 +50,6 @@ export default function AdminDashboard() {
   const [editUploading, setEditUploading] = useState(false);
   const [addError, setAddError] = useState('');
   const navigate = useNavigate();
-  const { logout: authLogout } = useAuth();
-
   useEffect(() => {
     const token = sessionStorage.getItem('adminToken');
     if (!token) { navigate('/'); return; }
@@ -71,11 +68,6 @@ export default function AdminDashboard() {
       navigate('/');
     }).finally(() => setLoading(false));
   }, [navigate]);
-
-  function logout() {
-    authLogout();
-    navigate('/');
-  }
 
   async function saveCommission(id) {
     const patch = patchState[id] || {};
@@ -237,7 +229,6 @@ export default function AdminDashboard() {
       <div className="container">
         <div className="admin-header">
           <h1 className="page-title">Admin Dashboard</h1>
-          <button className="btn-ghost btn-sm" onClick={logout}>Log Out</button>
         </div>
 
         <div className="admin-tabs">

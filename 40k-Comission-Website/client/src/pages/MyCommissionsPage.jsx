@@ -117,7 +117,6 @@ export default function MyCommissionsPage() {
           </div>
           <div className="myc-actions">
             <Link to="/request" className="btn-primary btn-sm">New Request</Link>
-            <button className="btn-ghost btn-sm" onClick={() => { logout(); navigate('/'); }}>Log Out</button>
           </div>
         </div>
 
