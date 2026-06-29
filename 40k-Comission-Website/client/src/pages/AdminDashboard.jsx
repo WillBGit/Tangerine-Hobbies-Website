@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import api from '../adminApi';
 import ChatPanel from '../components/ChatPanel';
 import './AdminDashboard.css';
@@ -50,6 +51,7 @@ export default function AdminDashboard() {
   const [editUploading, setEditUploading] = useState(false);
   const [addError, setAddError] = useState('');
   const navigate = useNavigate();
+  const { logout: authLogout } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -71,7 +73,7 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   function logout() {
-    localStorage.removeItem('adminToken');
+    authLogout();
     navigate('/');
   }
 
