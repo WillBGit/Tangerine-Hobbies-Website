@@ -62,19 +62,17 @@ export default function GalleryPage() {
         const hasNext = imgIdx < images.length - 1;
         return (
           <div className="modal-overlay" onClick={closeModal}>
-            {zoomLevel >= 1 && (
+            {zoomLevel === 1 && (
               <div
-                className={`zoom-lightbox zoom-lightbox--${zoomLevel}`}
-                onClick={e => { e.stopPropagation(); setZoomLevel(l => l - 1); }}
+                className="zoom-lightbox"
+                onClick={e => { e.stopPropagation(); setZoomLevel(0); }}
               >
                 <img
                   src={images[imgIdx]}
                   alt={selected.title}
-                  onClick={e => { e.stopPropagation(); setZoomLevel(l => Math.min(l + 1, 3)); }}
+                  onClick={e => { e.stopPropagation(); setZoomLevel(0); }}
                 />
-                <span className="zoom-hint">
-                  {zoomLevel < 3 ? 'Click image to zoom in · click outside to zoom out' : 'Click outside to zoom out'}
-                </span>
+                <span className="zoom-hint">Click to zoom out</span>
               </div>
             )}
             <div className="modal-box card" onClick={e => e.stopPropagation()}>
