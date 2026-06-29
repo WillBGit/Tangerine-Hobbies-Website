@@ -1,12 +1,21 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import rateLimit from 'express-rate-limit';
 import pool from '../db.js';
 import { requireUser } from '../middleware/userAuth.js';
 
 const router = Router();
 
-router.post('/register', async (req, res) => {
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Too many attempts, try again in 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+router.post('/register', authLimiter, async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) return res.status(400).json({ error: 'name, email and password are required' });
   if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
@@ -24,7 +33,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'email and password are required' });
   const { rows } = await pool.query('SELECT * FROM users WHERE email=$1', [email]);
