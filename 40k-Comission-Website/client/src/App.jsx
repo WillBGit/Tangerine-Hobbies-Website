@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import AboutPage from './pages/AboutPage';
 import GalleryPage from './pages/GalleryPage';
@@ -12,6 +12,12 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import MyCommissionsPage from './pages/MyCommissionsPage';
 
+function AdminRoute() {
+  const { user } = useAuth();
+  if (user?.isAdmin) return <Navigate to="/admin/dashboard" replace />;
+  return <AdminLogin />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -22,7 +28,7 @@ export default function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/request" element={<RequestPage />} />
-          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminRoute />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/track/:token" element={<TrackPage />} />
           <Route path="/register" element={<RegisterPage />} />

@@ -41,7 +41,7 @@ export default function Navbar() {
               <li><NavLink to="/register" className="nav-register" onClick={close}>Register</NavLink></li>
             </>
           )}
-          {user?.isAdmin && <li><NavLink to="/admin" className="nav-admin" onClick={close}>Admin</NavLink></li>}
+          {user?.isAdmin && <li><NavLink to="/admin/dashboard" className="nav-admin" onClick={close}>Admin</NavLink></li>}
         </ul>
       </div>
     </nav>
