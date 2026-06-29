@@ -67,13 +67,16 @@
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
 }
 
 .navbar-user {
+  position: fixed;
+  top: 0.85rem;
+  right: 1.5rem;
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  z-index: 150;
 }
 
 .navbar-username {
@@ -134,4 +137,5 @@
   }
   .navbar { position: relative; }
   .navbar-username { display: none; }
+  .navbar-user { top: 0.65rem; right: 3.5rem; }
 }
