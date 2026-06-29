@@ -53,7 +53,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
-    if (!token) { navigate('/admin'); return; }
+    if (!token) { navigate('/'); return; }
     Promise.all([
       api.get('/commissions'),
       api.get('/portfolio'),
@@ -66,13 +66,13 @@ export default function AdminDashboard() {
       setUsers(u.data);
     }).catch(() => {
       localStorage.removeItem('adminToken');
-      navigate('/admin');
+      navigate('/');
     }).finally(() => setLoading(false));
   }, [navigate]);
 
   function logout() {
     localStorage.removeItem('adminToken');
-    navigate('/admin');
+    navigate('/');
   }
 
   async function saveCommission(id) {
