@@ -5,23 +5,23 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const token = localStorage.getItem('userToken');
+      const token = sessionStorage.getItem('userToken');
       if (!token) return null;
       const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.exp * 1000 < Date.now()) { localStorage.removeItem('userToken'); return null; }
+      if (payload.exp * 1000 < Date.now()) { sessionStorage.removeItem('userToken'); return null; }
       return { id: payload.userId, name: payload.name, email: payload.email, isAdmin: payload.isAdmin || false };
     } catch { return null; }
   });
 
   function login(token, userData) {
-    localStorage.setItem('userToken', token);
-    if (userData.isAdmin) localStorage.setItem('adminToken', token);
+    sessionStorage.setItem('userToken', token);
+    if (userData.isAdmin) sessionStorage.setItem('adminToken', token);
     setUser(userData);
   }
 
   function logout() {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('adminToken');
+    sessionStorage.removeItem('userToken');
+    sessionStorage.removeItem('adminToken');
     setUser(null);
   }
 

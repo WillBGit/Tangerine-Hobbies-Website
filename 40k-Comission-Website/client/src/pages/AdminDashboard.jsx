@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   const { logout: authLogout } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
+    const token = sessionStorage.getItem('adminToken');
     if (!token) { navigate('/'); return; }
     Promise.all([
       api.get('/commissions'),
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
       setPricingTiers(t.data);
       setUsers(u.data);
     }).catch(() => {
-      localStorage.removeItem('adminToken');
+      sessionStorage.removeItem('adminToken');
       navigate('/');
     }).finally(() => setLoading(false));
   }, [navigate]);

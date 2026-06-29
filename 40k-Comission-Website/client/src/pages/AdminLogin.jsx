@@ -15,7 +15,7 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/login', { password });
-      localStorage.setItem('adminToken', data.token);
+      sessionStorage.setItem('adminToken', data.token);
       navigate('/admin/dashboard');
     } catch {
       setError('Invalid password.');
