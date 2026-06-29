@@ -5,7 +5,7 @@ export function requireAuth(req, res, next) {
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
+    if (payload.role !== 'admin' && !payload.isAdmin) return res.status(403).json({ error: 'Forbidden' });
     req.admin = payload;
     next();
   } catch {

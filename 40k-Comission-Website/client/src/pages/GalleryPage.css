@@ -64,11 +64,37 @@
   position: relative;
   background: #000;
   line-height: 0;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.modal-img-wrap--zoomed {
+  cursor: zoom-out;
+  max-height: 80vh;
+  overflow: auto;
 }
 .modal-img {
   width: 100%;
   max-height: 450px;
   object-fit: contain;
+  transition: transform 0.2s;
+}
+.modal-img--zoomed {
+  width: auto;
+  max-height: none;
+  max-width: none;
+  transform: scale(2);
+  transform-origin: top left;
+}
+.modal-zoom-hint {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.75rem;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.6);
+  background: rgba(0,0,0,0.45);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  pointer-events: none;
 }
 .modal-nav {
   position: absolute;

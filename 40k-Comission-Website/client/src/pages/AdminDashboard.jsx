@@ -35,6 +35,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('commissions');
   const [commissions, setCommissions] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
+  const [users, setUsers] = useState([]);
   const [pricingTiers, setPricingTiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(null);
@@ -57,10 +58,12 @@ export default function AdminDashboard() {
       api.get('/commissions'),
       api.get('/portfolio'),
       api.get('/pricing'),
-    ]).then(([c, p, t]) => {
+      api.get('/users'),
+    ]).then(([c, p, t, u]) => {
       setCommissions(c.data);
       setPortfolio(p.data);
       setPricingTiers(t.data);
+      setUsers(u.data);
     }).catch(() => {
       localStorage.removeItem('adminToken');
       navigate('/admin');
@@ -241,6 +244,9 @@ export default function AdminDashboard() {
           </button>
           <button className={`tab-btn ${tab === 'portfolio' ? 'tab-active' : ''}`} onClick={() => setTab('portfolio')}>
             Portfolio ({portfolio.length})
+          </button>
+          <button className={`tab-btn ${tab === 'users' ? 'tab-active' : ''}`} onClick={() => setTab('users')}>
+            Users
           </button>
         </div>
 
@@ -452,6 +458,36 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {tab === 'users' && (
+          <div className="users-list">
+            <p className="users-hint">Toggle admin access for registered users. Changes take effect on their next login.</p>
+            {users.length === 0 && <p className="loading">No registered users yet.</p>}
+            {users.map(u => (
+              <div key={u.id} className="user-row card">
+                <div className="user-info">
+                  <strong>{u.name}</strong>
+                  <span className="text-muted">{u.email}</span>
+                </div>
+                <div className="user-actions">
+                  {u.is_admin
+                    ? <span className="badge badge-complete">Admin</span>
+                    : <span className="badge badge-pending">User</span>
+                  }
+                  <button
+                    className={u.is_admin ? 'btn-danger btn-sm' : 'btn-ghost btn-sm'}
+                    onClick={async () => {
+                      const { data } = await api.patch(`/users/${u.id}/admin`, { isAdmin: !u.is_admin });
+                      setUsers(prev => prev.map(x => x.id === data.id ? { ...x, is_admin: data.is_admin } : x));
+                    }}
+                  >
+                    {u.is_admin ? 'Revoke Admin' : 'Make Admin'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

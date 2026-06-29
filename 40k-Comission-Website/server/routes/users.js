@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import pool from '../db.js';
+import { requireAuth } from '../middleware/auth.js';
 import { requireUser } from '../middleware/userAuth.js';
 
 const router = Router();
@@ -22,10 +23,10 @@ router.post('/register', authLimiter, async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, 12);
     const { rows } = await pool.query(
-      'INSERT INTO users (name, email, password_hash) VALUES ($1,$2,$3) RETURNING id, name, email',
+      'INSERT INTO users (name, email, password_hash) VALUES ($1,$2,$3) RETURNING id, name, email, is_admin',
       [name, email, hash]
     );
-    const token = jwt.sign({ role: 'user', userId: rows[0].id, name: rows[0].name, email: rows[0].email }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ role: 'user', userId: rows[0].id, name: rows[0].name, email: rows[0].email, isAdmin: rows[0].is_admin }, process.env.JWT_SECRET, { expiresIn: '30d' });
     res.status(201).json({ token, user: rows[0] });
   } catch (err) {
     if (err.code === '23505') return res.status(409).json({ error: 'An account with that email already exists' });
@@ -40,8 +41,8 @@ router.post('/login', authLimiter, async (req, res) => {
   if (!rows.length) return res.status(401).json({ error: 'Invalid email or password' });
   const match = await bcrypt.compare(password, rows[0].password_hash);
   if (!match) return res.status(401).json({ error: 'Invalid email or password' });
-  const token = jwt.sign({ role: 'user', userId: rows[0].id, name: rows[0].name, email: rows[0].email }, process.env.JWT_SECRET, { expiresIn: '30d' });
-  res.json({ token, user: { id: rows[0].id, name: rows[0].name, email: rows[0].email } });
+  const token = jwt.sign({ role: 'user', userId: rows[0].id, name: rows[0].name, email: rows[0].email, isAdmin: rows[0].is_admin }, process.env.JWT_SECRET, { expiresIn: '30d' });
+  res.json({ token, user: { id: rows[0].id, name: rows[0].name, email: rows[0].email, isAdmin: rows[0].is_admin } });
 });
 
 router.get('/me', requireUser, async (req, res) => {
@@ -86,6 +87,25 @@ router.post('/me/commissions/:id/messages', requireUser, async (req, res) => {
     [req.params.id, 'client', content.trim()]
   );
   res.status(201).json(rows[0]);
+});
+
+// Admin: list all users
+router.get('/', requireAuth, async (req, res) => {
+  const { rows } = await pool.query(
+    'SELECT id, name, email, is_admin, created_at FROM users ORDER BY created_at ASC'
+  );
+  res.json(rows);
+});
+
+// Admin: toggle admin status
+router.patch('/:id/admin', requireAuth, async (req, res) => {
+  const { isAdmin } = req.body;
+  const { rows } = await pool.query(
+    'UPDATE users SET is_admin=$1 WHERE id=$2 RETURNING id, name, email, is_admin',
+    [isAdmin, req.params.id]
+  );
+  if (!rows.length) return res.status(404).json({ error: 'Not found' });
+  res.json(rows[0]);
 });
 
 export default router;

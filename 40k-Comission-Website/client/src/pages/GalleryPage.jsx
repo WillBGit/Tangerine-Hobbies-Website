@@ -7,6 +7,7 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [imgIdx, setImgIdx] = useState(0);
+  const [zoomed, setZoomed] = useState(false);
 
   useEffect(() => {
     api.get('/portfolio')
@@ -22,6 +23,7 @@ export default function GalleryPage() {
   function closeModal() {
     setSelected(null);
     setImgIdx(0);
+    setZoomed(false);
   }
 
   if (loading) return <div className="page"><div className="container loading">Loading gallery...</div></div>;
@@ -60,14 +62,15 @@ export default function GalleryPage() {
         return (
           <div className="modal-overlay" onClick={closeModal}>
             <div className="modal-box card" onClick={e => e.stopPropagation()}>
-              <div className="modal-img-wrap">
-                <img src={images[imgIdx]} alt={selected.title} className="modal-img" />
-                {hasPrev && (
-                  <button className="modal-nav modal-nav--prev" onClick={() => setImgIdx(i => i - 1)}>‹</button>
+              <div className={`modal-img-wrap${zoomed ? ' modal-img-wrap--zoomed' : ''}`} onClick={() => setZoomed(z => !z)}>
+                <img src={images[imgIdx]} alt={selected.title} className={`modal-img${zoomed ? ' modal-img--zoomed' : ''}`} />
+                {!zoomed && hasPrev && (
+                  <button className="modal-nav modal-nav--prev" onClick={e => { e.stopPropagation(); setImgIdx(i => i - 1); }}>‹</button>
                 )}
-                {hasNext && (
-                  <button className="modal-nav modal-nav--next" onClick={() => setImgIdx(i => i + 1)}>›</button>
+                {!zoomed && hasNext && (
+                  <button className="modal-nav modal-nav--next" onClick={e => { e.stopPropagation(); setImgIdx(i => i + 1); }}>›</button>
                 )}
+                <span className="modal-zoom-hint">{zoomed ? 'Click to zoom out' : 'Click to zoom in'}</span>
                 {images.length > 1 && (
                   <span className="modal-counter">{imgIdx + 1} / {images.length}</span>
                 )}

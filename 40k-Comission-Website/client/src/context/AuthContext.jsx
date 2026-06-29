@@ -9,17 +9,19 @@ export function AuthProvider({ children }) {
       if (!token) return null;
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.exp * 1000 < Date.now()) { localStorage.removeItem('userToken'); return null; }
-      return { id: payload.userId, name: payload.name, email: payload.email };
+      return { id: payload.userId, name: payload.name, email: payload.email, isAdmin: payload.isAdmin || false };
     } catch { return null; }
   });
 
   function login(token, userData) {
     localStorage.setItem('userToken', token);
+    if (userData.isAdmin) localStorage.setItem('adminToken', token);
     setUser(userData);
   }
 
   function logout() {
     localStorage.removeItem('userToken');
+    localStorage.removeItem('adminToken');
     setUser(null);
   }
 

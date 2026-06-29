@@ -212,6 +212,14 @@
 .portfolio-admin-card.drag-over { border-color: var(--gold); box-shadow: 0 0 12px rgba(184,36,90,0.4); }
 .portfolio-admin-card.drag-over * { pointer-events: none; }
 
+/* Users tab */
+.users-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.users-hint { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+.user-row { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.25rem; gap: 1rem; flex-wrap: wrap; }
+.user-info { display: flex; flex-direction: column; gap: 0.15rem; }
+.user-info strong { color: var(--text); }
+.user-actions { display: flex; align-items: center; gap: 0.75rem; }
+
 @media (max-width: 768px) {
   /* Commission summary row stacks on mobile */
   .commission-summary { flex-wrap: wrap; gap: 0.5rem; }
