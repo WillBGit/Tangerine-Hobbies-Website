@@ -61,16 +61,21 @@ export default function GalleryPage() {
         const hasNext = imgIdx < images.length - 1;
         return (
           <div className="modal-overlay" onClick={closeModal}>
+            {zoomed && (
+              <div className="zoom-lightbox" onClick={() => setZoomed(false)}>
+                <img src={images[imgIdx]} alt={selected.title} />
+              </div>
+            )}
             <div className="modal-box card" onClick={e => e.stopPropagation()}>
-              <div className={`modal-img-wrap${zoomed ? ' modal-img-wrap--zoomed' : ''}`} onClick={() => setZoomed(z => !z)}>
-                <img src={images[imgIdx]} alt={selected.title} className={`modal-img${zoomed ? ' modal-img--zoomed' : ''}`} />
-                {!zoomed && hasPrev && (
-                  <button className="modal-nav modal-nav--prev" onClick={e => { e.stopPropagation(); setImgIdx(i => i - 1); }}>‹</button>
+              <div className="modal-img-wrap" onClick={() => setZoomed(true)}>
+                <img src={images[imgIdx]} alt={selected.title} className="modal-img" />
+                {hasPrev && (
+                  <button className="modal-nav modal-nav--prev" onClick={e => { e.stopPropagation(); setImgIdx(i => i - 1); setZoomed(false); }}>‹</button>
                 )}
-                {!zoomed && hasNext && (
-                  <button className="modal-nav modal-nav--next" onClick={e => { e.stopPropagation(); setImgIdx(i => i + 1); }}>›</button>
+                {hasNext && (
+                  <button className="modal-nav modal-nav--next" onClick={e => { e.stopPropagation(); setImgIdx(i => i + 1); setZoomed(false); }}>›</button>
                 )}
-                <span className="modal-zoom-hint">{zoomed ? 'Click to zoom out' : 'Click to zoom in'}</span>
+                <span className="modal-zoom-hint">Click to zoom in</span>
                 {images.length > 1 && (
                   <span className="modal-counter">{imgIdx + 1} / {images.length}</span>
                 )}
