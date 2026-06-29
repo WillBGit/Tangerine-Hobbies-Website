@@ -45,6 +45,7 @@ h1, h2, h3 {
   letter-spacing: 0.08em;
   color: var(--gold);
   background: linear-gradient(180deg, #ff6eb4, #a78bfa, #67e8f9);
+  background-size: 100% 1.6em;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

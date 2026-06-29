@@ -20,7 +20,7 @@ export default function PricingPage() {
     <div className="page">
       <div className="container">
         <h1 className="page-title">Pricing</h1>
-        <p className="page-subtitle">All prices are per model. Contact me for large army discounts or special requests.</p>
+        <p className="page-subtitle">THESE PRICES ARE ESTIMATES and will be dependent on project details upon request.</p>
 
         <div className="pricing-grid">
           {tiers.map((tier, i) => (

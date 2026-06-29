@@ -62,6 +62,92 @@
 .detail-actions { display: flex; align-items: flex-end; gap: 0.75rem; flex-wrap: wrap; }
 .action-btns { display: flex; gap: 0.5rem; padding-bottom: 0.05rem; }
 
+/* Image upload toggle */
+.image-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+.image-mode-toggle label { margin-bottom: 0; }
+.toggle-btns { display: flex; gap: 0; }
+.toggle-btns button {
+  background: var(--bg3);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  border-radius: 0;
+  cursor: pointer;
+}
+.toggle-btns button:first-child { border-radius: 4px 0 0 4px; }
+.toggle-btns button:last-child { border-radius: 0 4px 4px 0; }
+.toggle-btns .toggle-active { background: var(--gold); color: #000; border-color: var(--gold); }
+.upload-area { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.upload-area input[type="file"] { flex: 1; font-size: 0.85rem; color: var(--text); }
+.upload-status { font-size: 0.8rem; color: var(--text-muted); }
+.upload-ok { color: #86efac; }
+.url-add-row { display: flex; gap: 0.5rem; }
+.url-add-row input { flex: 1; }
+.image-preview-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+.preview-thumb {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.thumb-arrows {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+.thumb-arrow {
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  width: 20px;
+  height: 18px;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thumb-arrow:disabled { opacity: 0.2; cursor: default; }
+.preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
 /* Payment */
 .payment-section {
   margin-top: 1rem;
@@ -119,4 +205,34 @@
 }
 .portfolio-admin-info strong { font-size: 0.9rem; color: var(--text); }
 .portfolio-admin-info span { font-size: 0.78rem; color: var(--gold); }
-.portfolio-admin-card .btn-danger { margin: 0 0.75rem 0.75rem; }
+.portfolio-admin-btns { display: flex; gap: 0.5rem; margin: 0 0.75rem 0.75rem; }
+.portfolio-admin-btns button { flex: 1; }
+.portfolio-admin-card { cursor: grab; }
+.portfolio-admin-card.dragging { opacity: 0.4; cursor: grabbing; }
+.portfolio-admin-card.drag-over { border-color: var(--gold); box-shadow: 0 0 12px rgba(184,36,90,0.4); }
+.portfolio-admin-card.drag-over * { pointer-events: none; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+/* Edit modal */
+.edit-portfolio-modal {
+  width: 100%;
+  max-width: 560px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.edit-portfolio-modal h3 { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+.edit-modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }

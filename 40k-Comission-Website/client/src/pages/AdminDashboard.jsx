@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../adminApi';
 import ChatPanel from '../components/ChatPanel';
@@ -6,15 +6,47 @@ import './AdminDashboard.css';
 
 const STATUSES = ['pending', 'accepted', 'wip', 'complete', 'declined'];
 
+function SortableThumbs({ urls, onReorder }) {
+  function move(i, dir) {
+    const to = i + dir;
+    if (to < 0 || to >= urls.length) return;
+    const next = [...urls];
+    [next[i], next[to]] = [next[to], next[i]];
+    onReorder(next);
+  }
+
+  return (
+    <div className="image-preview-strip">
+      {urls.map((url, i) => (
+        <div key={url} className="preview-thumb">
+          <img src={url} alt="" />
+          <button type="button" className="thumb-remove" onClick={() => onReorder(urls.filter((_, idx) => idx !== i))}>✕</button>
+          <div className="thumb-arrows">
+            <button type="button" className="thumb-arrow" disabled={i === 0} onClick={() => move(i, -1)}>‹</button>
+            <button type="button" className="thumb-arrow" disabled={i === urls.length - 1} onClick={() => move(i, 1)}>›</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const [tab, setTab] = useState('commissions');
   const [commissions, setCommissions] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
+  const [pricingTiers, setPricingTiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(null);
   const [patchState, setPatchState] = useState({});
   const [paymentInputs, setPaymentInputs] = useState({});
-  const [newItem, setNewItem] = useState({ title: '', faction: '', description: '', image_url: '' });
+  const [newItem, setNewItem] = useState({ title: '', faction: '', description: '', tier_id: '' });
+  const [uploadedUrls, setUploadedUrls] = useState([]);
+  const [urlInput, setUrlInput] = useState('');
+  const [imageMode, setImageMode] = useState('upload');
+  const [uploading, setUploading] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editUploading, setEditUploading] = useState(false);
   const [addError, setAddError] = useState('');
   const navigate = useNavigate();
 
@@ -24,9 +56,11 @@ export default function AdminDashboard() {
     Promise.all([
       api.get('/commissions'),
       api.get('/portfolio'),
-    ]).then(([c, p]) => {
+      api.get('/pricing'),
+    ]).then(([c, p, t]) => {
       setCommissions(c.data);
       setPortfolio(p.data);
+      setPricingTiers(t.data);
     }).catch(() => {
       localStorage.removeItem('adminToken');
       navigate('/admin');
@@ -65,15 +99,86 @@ export default function AdminDashboard() {
     if (expanded === id) setExpanded(null);
   }
 
+  async function handleImageFiles(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setUploading(true);
+    setAddError('');
+    try {
+      const formData = new FormData();
+      files.forEach(f => formData.append('images', f));
+      const { data } = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setUploadedUrls(u => [...u, ...data.urls]);
+    } catch {
+      setAddError('Image upload failed.');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  }
+
+  function addUrlInput() {
+    const url = urlInput.trim();
+    if (!url) return;
+    setUploadedUrls(u => [...u, url]);
+    setUrlInput('');
+  }
+
   async function addPortfolioItem(e) {
     e.preventDefault();
     setAddError('');
+    if (!uploadedUrls.length) { setAddError('Add at least one image.'); return; }
     try {
-      const { data } = await api.post('/portfolio', newItem);
+      const { data } = await api.post('/portfolio', { ...newItem, image_urls: uploadedUrls });
       setPortfolio(p => [data, ...p]);
-      setNewItem({ title: '', faction: '', description: '', image_url: '' });
+      setNewItem({ title: '', faction: '', description: '', tier_id: '' });
+      setUploadedUrls([]);
+      setUrlInput('');
     } catch (err) {
       setAddError(err.response?.data?.error || 'Failed to add item.');
+    }
+  }
+
+  function startEdit(item) {
+    setEditingItem({
+      ...item,
+      image_urls: item.image_urls?.length ? item.image_urls : [item.image_url].filter(Boolean),
+      tier_id: item.tier_id || '',
+    });
+  }
+
+  async function handleEditImageFiles(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setEditUploading(true);
+    try {
+      const formData = new FormData();
+      files.forEach(f => formData.append('images', f));
+      const { data } = await api.post('/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      setEditingItem(ei => ({ ...ei, image_urls: [...ei.image_urls, ...data.urls] }));
+    } catch {
+      alert('Image upload failed.');
+    } finally {
+      setEditUploading(false);
+      e.target.value = '';
+    }
+  }
+
+  async function savePortfolioItem() {
+    if (!editingItem.title || !editingItem.image_urls?.length) return;
+    try {
+      const { data } = await api.patch(`/portfolio/${editingItem.id}`, {
+        title: editingItem.title,
+        description: editingItem.description,
+        image_urls: editingItem.image_urls,
+        tier_id: editingItem.tier_id || null,
+      });
+      setPortfolio(p => p.map(i => i.id === data.id ? { ...data, tier_name: pricingTiers.find(t => String(t.id) === String(data.tier_id))?.name } : i));
+      setEditingItem(null);
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to save. Check the server is running.');
     }
   }
 
@@ -81,6 +186,43 @@ export default function AdminDashboard() {
     if (!confirm('Remove this portfolio item?')) return;
     await api.delete(`/portfolio/${id}`);
     setPortfolio(p => p.filter(i => i.id !== id));
+  }
+
+  const dragPortfolioIdx = useRef(null);
+
+  function onCardDragStart(e, idx) {
+    dragPortfolioIdx.current = idx;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(idx));
+    e.currentTarget.classList.add('dragging');
+  }
+
+  function onCardDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function onCardDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  async function onCardDrop(e, idx) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    const from = dragPortfolioIdx.current;
+    dragPortfolioIdx.current = null;
+    if (from === null || from === idx) return;
+    const next = [...portfolio];
+    const [moved] = next.splice(from, 1);
+    next.splice(idx, 0, moved);
+    setPortfolio(next);
+    await api.post('/portfolio/reorder', { ids: next.map(i => i.id) });
+  }
+
+  function onCardDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    dragPortfolioIdx.current = null;
   }
 
   if (loading) return <div className="page"><div className="container loading">Loading dashboard...</div></div>;
@@ -201,13 +343,40 @@ export default function AdminDashboard() {
                   <input value={newItem.title} onChange={e => setNewItem(n => ({ ...n, title: e.target.value }))} required placeholder="e.g. Ultramarines Tactical Squad" />
                 </div>
                 <div className="form-group">
-                  <label>Faction</label>
-                  <input value={newItem.faction} onChange={e => setNewItem(n => ({ ...n, faction: e.target.value }))} placeholder="e.g. Space Marines" />
+                  <label>Pricing Tier</label>
+                  <select value={newItem.tier_id} onChange={e => setNewItem(n => ({ ...n, tier_id: e.target.value }))}>
+                    <option value="">— None —</option>
+                    {pricingTiers.map(t => (
+                      <option key={t.id} value={t.id}>{t.name} (${Number(t.price_per_model).toFixed(2)}/model)</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="form-group">
-                <label>Image URL *</label>
-                <input value={newItem.image_url} onChange={e => setNewItem(n => ({ ...n, image_url: e.target.value }))} required placeholder="https://..." />
+                <div className="image-mode-toggle">
+                  <label>Images *</label>
+                  <div className="toggle-btns">
+                    <button type="button" className={imageMode === 'upload' ? 'toggle-active' : ''} onClick={() => setImageMode('upload')}>Upload</button>
+                    <button type="button" className={imageMode === 'url' ? 'toggle-active' : ''} onClick={() => setImageMode('url')}>URL</button>
+                  </div>
+                </div>
+                {imageMode === 'upload' ? (
+                  <div className="upload-area">
+                    <input type="file" accept="image/*" multiple onChange={handleImageFiles} disabled={uploading} />
+                    {uploading && <span className="upload-status">Uploading...</span>}
+                  </div>
+                ) : (
+                  <div className="url-add-row">
+                    <input value={urlInput} onChange={e => setUrlInput(e.target.value)} placeholder="https://..." onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addUrlInput())} />
+                    <button type="button" className="btn-ghost btn-sm" onClick={addUrlInput}>Add</button>
+                  </div>
+                )}
+                {uploadedUrls.length > 0 && (
+                  <SortableThumbs
+                    urls={uploadedUrls}
+                    onReorder={setUploadedUrls}
+                  />
+                )}
               </div>
               <div className="form-group">
                 <label>Description</label>
@@ -218,17 +387,71 @@ export default function AdminDashboard() {
             </form>
 
             <div className="portfolio-admin-grid">
-              {portfolio.map(item => (
-                <div key={item.id} className="portfolio-admin-card card">
-                  <img src={item.image_url} alt={item.title} />
+              {portfolio.map((item, idx) => (
+                <div
+                  key={item.id}
+                  className="portfolio-admin-card card"
+                  draggable
+                  onDragStart={e => onCardDragStart(e, idx)}
+                  onDragOver={onCardDragOver}
+                  onDragLeave={onCardDragLeave}
+                  onDrop={e => onCardDrop(e, idx)}
+                  onDragEnd={onCardDragEnd}
+                >
+                  <img src={item.image_urls?.[0] || item.image_url} alt={item.title} draggable={false} />
                   <div className="portfolio-admin-info">
                     <strong>{item.title}</strong>
-                    {item.faction && <span>{item.faction}</span>}
+                    {item.tier_name && <span>{item.tier_name}</span>}
                   </div>
-                  <button className="btn-danger btn-sm" onClick={() => deletePortfolioItem(item.id)}>Remove</button>
+                  <div className="portfolio-admin-btns">
+                    <button className="btn-ghost btn-sm" onClick={() => startEdit(item)}>Edit</button>
+                    <button className="btn-danger btn-sm" onClick={() => deletePortfolioItem(item.id)}>Remove</button>
+                  </div>
                 </div>
               ))}
             </div>
+
+            {editingItem && (
+              <div className="modal-overlay" onClick={() => setEditingItem(null)}>
+                <div className="modal-box card edit-portfolio-modal" onClick={e => e.stopPropagation()}>
+                  <h3>Edit Portfolio Item</h3>
+                  <div className="form-row-2">
+                    <div className="form-group">
+                      <label>Title *</label>
+                      <input value={editingItem.title} onChange={e => setEditingItem(ei => ({ ...ei, title: e.target.value }))} />
+                    </div>
+                    <div className="form-group">
+                      <label>Pricing Tier</label>
+                      <select value={editingItem.tier_id} onChange={e => setEditingItem(ei => ({ ...ei, tier_id: e.target.value }))}>
+                        <option value="">— None —</option>
+                        {pricingTiers.map(t => (
+                          <option key={t.id} value={t.id}>{t.name} (${Number(t.price_per_model).toFixed(2)}/model)</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Description</label>
+                    <textarea rows={2} value={editingItem.description || ''} onChange={e => setEditingItem(ei => ({ ...ei, description: e.target.value }))} />
+                  </div>
+                  <div className="form-group">
+                    <label>Images</label>
+                    <SortableThumbs
+                      urls={editingItem.image_urls}
+                      onReorder={urls => setEditingItem(ei => ({ ...ei, image_urls: urls }))}
+                    />
+                    <div className="upload-area" style={{ marginTop: '0.5rem' }}>
+                      <input type="file" accept="image/*" multiple onChange={handleEditImageFiles} disabled={editUploading} />
+                      {editUploading && <span className="upload-status">Uploading...</span>}
+                    </div>
+                  </div>
+                  <div className="edit-modal-actions">
+                    <button className="btn-primary btn-sm" onClick={savePortfolioItem}>Save Changes</button>
+                    <button className="btn-ghost btn-sm" onClick={() => setEditingItem(null)}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
