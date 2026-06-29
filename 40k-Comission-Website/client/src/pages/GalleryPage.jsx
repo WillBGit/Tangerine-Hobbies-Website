@@ -7,7 +7,7 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [imgIdx, setImgIdx] = useState(0);
-  const [zoomed, setZoomed] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(0);
 
   useEffect(() => {
     api.get('/portfolio')
@@ -18,12 +18,13 @@ export default function GalleryPage() {
   function openItem(item) {
     setSelected(item);
     setImgIdx(0);
+    setZoomLevel(0);
   }
 
   function closeModal() {
     setSelected(null);
     setImgIdx(0);
-    setZoomed(false);
+    setZoomLevel(0);
   }
 
   if (loading) return <div className="page"><div className="container loading">Loading gallery...</div></div>;
@@ -61,19 +62,29 @@ export default function GalleryPage() {
         const hasNext = imgIdx < images.length - 1;
         return (
           <div className="modal-overlay" onClick={closeModal}>
-            {zoomed && (
-              <div className="zoom-lightbox" onClick={() => setZoomed(false)}>
-                <img src={images[imgIdx]} alt={selected.title} />
+            {zoomLevel >= 1 && (
+              <div
+                className={`zoom-lightbox zoom-lightbox--${zoomLevel}`}
+                onClick={e => { e.stopPropagation(); setZoomLevel(l => l - 1); }}
+              >
+                <img
+                  src={images[imgIdx]}
+                  alt={selected.title}
+                  onClick={e => { e.stopPropagation(); setZoomLevel(l => Math.min(l + 1, 3)); }}
+                />
+                <span className="zoom-hint">
+                  {zoomLevel < 3 ? 'Click image to zoom in · click outside to zoom out' : 'Click outside to zoom out'}
+                </span>
               </div>
             )}
             <div className="modal-box card" onClick={e => e.stopPropagation()}>
-              <div className="modal-img-wrap" onClick={() => setZoomed(true)}>
+              <div className="modal-img-wrap" onClick={() => setZoomLevel(1)}>
                 <img src={images[imgIdx]} alt={selected.title} className="modal-img" />
                 {hasPrev && (
-                  <button className="modal-nav modal-nav--prev" onClick={e => { e.stopPropagation(); setImgIdx(i => i - 1); setZoomed(false); }}>‹</button>
+                  <button className="modal-nav modal-nav--prev" onClick={e => { e.stopPropagation(); setImgIdx(i => i - 1); setZoomLevel(0); }}>‹</button>
                 )}
                 {hasNext && (
-                  <button className="modal-nav modal-nav--next" onClick={e => { e.stopPropagation(); setImgIdx(i => i + 1); setZoomed(false); }}>›</button>
+                  <button className="modal-nav modal-nav--next" onClick={e => { e.stopPropagation(); setImgIdx(i => i + 1); setZoomLevel(0); }}>›</button>
                 )}
                 <span className="modal-zoom-hint">Click to zoom in</span>
                 {images.length > 1 && (
