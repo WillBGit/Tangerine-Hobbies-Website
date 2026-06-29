@@ -145,3 +145,9 @@ select option { background: var(--bg3); }
 .success-msg { color: #6fdb6f; font-size: 0.9rem; margin-top: 0.5rem; }
 
 .loading { color: var(--text-muted); padding: 2rem; text-align: center; }
+
+@media (max-width: 600px) {
+  .page { padding: 1.5rem 0 2.5rem; }
+  .page-title { font-size: 1.4rem; }
+  .container { padding: 0 1rem; }
+}

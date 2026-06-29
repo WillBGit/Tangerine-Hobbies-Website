@@ -212,6 +212,38 @@
 .portfolio-admin-card.drag-over { border-color: var(--gold); box-shadow: 0 0 12px rgba(184,36,90,0.4); }
 .portfolio-admin-card.drag-over * { pointer-events: none; }
 
+@media (max-width: 768px) {
+  /* Commission summary row stacks on mobile */
+  .commission-summary { flex-wrap: wrap; gap: 0.5rem; }
+  .commission-right { width: 100%; justify-content: flex-start; }
+  .cdate { display: none; }
+
+  /* Detail grid goes single column */
+  .detail-grid { grid-template-columns: 1fr; }
+
+  /* Detail actions stack */
+  .detail-actions { flex-direction: column; align-items: stretch; }
+  .action-btns { flex-wrap: wrap; }
+
+  /* Payment row stacks */
+  .payment-request-row { flex-direction: column; align-items: flex-start; }
+  .payment-amount-input { width: 100%; }
+
+  /* Admin tabs scroll horizontally */
+  .admin-tabs { overflow-x: auto; }
+  .tab-btn { white-space: nowrap; }
+
+  /* Portfolio grid single column */
+  .portfolio-admin-grid { grid-template-columns: 1fr; }
+
+  /* Add portfolio form full width */
+  .add-portfolio-form { padding: 1rem; }
+  .form-row-2 { grid-template-columns: 1fr; }
+
+  /* Edit modal full screen on mobile */
+  .edit-portfolio-modal { max-width: 100%; max-height: 100vh; border-radius: 0; }
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
