@@ -28,7 +28,10 @@ export default function PricingPage() {
               <div className="pricing-header">
                 <h2>{tier.name}</h2>
                 <div className="pricing-price">
-                  <span className="price-amount">${Number(tier.price_per_model).toFixed(2)}</span>
+                  <span className="price-amount">
+                    ${Number(tier.price_per_model).toFixed(0)}
+                    {tier.price_max ? ` – $${Number(tier.price_max).toFixed(0)}` : ''}
+                  </span>
                   <span className="price-unit"> / model</span>
                 </div>
               </div>

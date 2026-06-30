@@ -346,7 +346,7 @@ export default function AdminDashboard() {
                   <select value={newItem.tier_id} onChange={e => setNewItem(n => ({ ...n, tier_id: e.target.value }))}>
                     <option value="">— None —</option>
                     {pricingTiers.map(t => (
-                      <option key={t.id} value={t.id}>{t.name} (${Number(t.price_per_model).toFixed(2)}/model)</option>
+                      <option key={t.id} value={t.id}>{t.name} (${Number(t.price_per_model).toFixed(0)}{t.price_max ? `–$${Number(t.price_max).toFixed(0)}` : ''}/model)</option>
                     ))}
                   </select>
                 </div>
@@ -424,7 +424,7 @@ export default function AdminDashboard() {
                       <select value={editingItem.tier_id} onChange={e => setEditingItem(ei => ({ ...ei, tier_id: e.target.value }))}>
                         <option value="">— None —</option>
                         {pricingTiers.map(t => (
-                          <option key={t.id} value={t.id}>{t.name} (${Number(t.price_per_model).toFixed(2)}/model)</option>
+                          <option key={t.id} value={t.id}>{t.name} (${Number(t.price_per_model).toFixed(0)}{t.price_max ? `–$${Number(t.price_max).toFixed(0)}` : ''}/model)</option>
                         ))}
                       </select>
                     </div>
