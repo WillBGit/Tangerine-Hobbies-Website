@@ -53,6 +53,7 @@ export default function PricingPage() {
         <div className="pricing-note">
           <h3>Notes</h3>
           <ul>
+            <li>Product will be shipped both ways at buyer's expense.</li>
             <li>Prices may vary for large centerpiece models (vehicles, monsters, named characters).</li>
             <li>Turnaround: ~1–2 weeks for small squads, longer for large orders.</li>
             <li>A 50% deposit is required before work begins.</li>
