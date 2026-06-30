@@ -30,6 +30,13 @@
 }
 .gallery-info h3 { font-size: 1rem; color: var(--text); margin-bottom: 0.25rem; }
 
+.gallery-tier {
+  font-size: 0.75rem;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
 .gallery-faction {
   font-size: 0.78rem;
   color: var(--gold);
@@ -163,5 +170,6 @@
   gap: 0.5rem;
 }
 .modal-body h2 { font-size: 1.4rem; }
+.modal-tier { color: var(--red); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.07em; }
 .modal-faction { color: var(--gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.07em; }
 .modal-desc { color: var(--text-muted); }

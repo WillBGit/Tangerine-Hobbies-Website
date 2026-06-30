@@ -67,6 +67,7 @@ export default function GalleryPage() {
                   <img src={images[0]} alt={item.title} className="gallery-img" />
                   <div className="gallery-info">
                     <h3>{item.title}</h3>
+                    {item.tier_name && <span className="gallery-tier">{item.tier_name}</span>}
                     {item.faction && <span className="gallery-faction">{item.faction}</span>}
                     {images.length > 1 && <span className="gallery-count">{images.length} photos</span>}
                   </div>
@@ -126,6 +127,7 @@ export default function GalleryPage() {
               )}
               <div className="modal-body">
                 <h2>{selected.title}</h2>
+                {selected.tier_name && <p className="modal-tier">{selected.tier_name}</p>}
                 {selected.faction && <p className="modal-faction">{selected.faction}</p>}
                 {selected.description && <p className="modal-desc">{selected.description}</p>}
                 <button className="btn-ghost" onClick={closeModal}>Close</button>
