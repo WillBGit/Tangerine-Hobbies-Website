@@ -1,0 +1,5 @@
+# Only track the website project
+*
+!.gitignore
+!40k-Comission-Website/
+!40k-Comission-Website/**
