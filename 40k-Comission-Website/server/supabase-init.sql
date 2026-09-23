@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS pricing_tiers (
   name VARCHAR(100) NOT NULL,
   description TEXT,
   price_per_model NUMERIC(10,2) NOT NULL,
+  price_max NUMERIC(10,2),
   features TEXT[],
   display_order INT DEFAULT 0
 );

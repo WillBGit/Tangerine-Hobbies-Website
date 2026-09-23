@@ -1,0 +1,2 @@
+ALTER TABLE pricing_tiers
+  ADD COLUMN IF NOT EXISTS price_max NUMERIC(10,2);
